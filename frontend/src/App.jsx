@@ -1,14 +1,9 @@
-import { useState } from 'react'
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './App.css'
-import HomePage from './Pages/HomePage';
+import HomePage from "./Pages/HomePage";
+import "./App.css";
 
 function App() {
-
-  
-
-
-
   return (
     <>
       <BrowserRouter>
@@ -17,7 +12,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
