@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Moon, Sun, Settings } from "lucide-react";
 
 const HomePage = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
     if (theme === "dark") {
@@ -10,11 +15,12 @@ const HomePage = () => {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    localStorage.setItem("theme", theme); 
   }, [theme]);
 
   const handleThemeChange = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
+  }
 
   return (
     <>
@@ -27,8 +33,7 @@ const HomePage = () => {
               <button
                 aria-controls="drawer-navigation"
                 className="p-2 mr-2 text-gray-600 rounded-lg cursor-pointer md:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                data-drawer-target="drawer-navigation"
-                data-drawer-toggle="drawer-navigation"
+                onClick={toggleSidebar}
               >
                 <svg
                   aria-hidden="true"
@@ -119,10 +124,12 @@ const HomePage = () => {
         </nav>
         {/* ---------------- SIDEBAR ---------------- */}
         <aside
-          aria-label="Sidenav"
-          className="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-          id="drawer-navigation"
-        >
+        aria-label="Sidenav"
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+      
+      >
           <div className="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
             <form action="#" className="md:hidden mb-2" method="GET">
               <label className="sr-only" htmlFor="sidebar-search">
