@@ -58,6 +58,7 @@ const HomePage = () => {
                 </svg>
                 <span className="sr-only">Toggle sidebar</span>
               </button>
+
               <a
                 className="flex items-center justify-between mr-4"
                 href="https://flowbite.com"
@@ -71,6 +72,7 @@ const HomePage = () => {
                   Flowbite
                 </span>
               </a>
+              
               <form action="#" className="hidden md:block md:pl-2" method="GET">
                 <label className="sr-only" htmlFor="topbar-search">
                   Search
