@@ -1,9 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Moon, Sun, Settings } from "lucide-react";
+import { Link, Outlet } from "react-router-dom";
+import { Dropdown } from "flowbite-react";
+import { HiCog, HiCurrencyDollar, HiLogout, HiViewGrid } from "react-icons/hi";
 
-const HomePage = () => {
+const AdminBody = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef(null);
+  const menuRef = useRef(null);
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
+
+  const closeMenu = (event) => {
+    if (
+      !menuRef.current.contains(event.target) &&
+      event.target !== menuButtonRef.current
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", closeMenu);
+
+    return () => {
+      document.removeEventListener("click", closeMenu);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -15,12 +43,12 @@ const HomePage = () => {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    localStorage.setItem("theme", theme); 
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const handleThemeChange = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  }
+  };
 
   return (
     <>
@@ -64,21 +92,21 @@ const HomePage = () => {
                 <span className="sr-only">Toggle sidebar</span>
               </button>
 
-              <a
+              <Link
+                to="/adminpanel"
                 className="flex items-center justify-between mr-4"
-                href="https://flowbite.com"
               >
                 <img
-                  alt="Flowbite Logo"
                   className="mr-3 h-8"
+                  alt="Flowbite Logo"
                   src="https://flowbite.s3.amazonaws.com/logo.svg"
                 />
                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  Flowbite
+                  Dashboard
                 </span>
-              </a>
-              
-              <form action="#" className="hidden md:block md:pl-2" method="GET">
+              </Link>
+
+              {/* <form action="#" className="hidden md:block md:pl-2" method="GET">
                 <label className="sr-only" htmlFor="topbar-search">
                   Search
                 </label>
@@ -105,7 +133,7 @@ const HomePage = () => {
                     type="text"
                   />
                 </div>
-              </form>
+              </form> */}
             </div>
 
             {/* ---------------- NAVBAR - RIGHT ---------------- */}
@@ -116,20 +144,84 @@ const HomePage = () => {
               >
                 {theme === "light" ? <Moon /> : <Sun />}
               </button>
-              <button className=" text-gray-800 dark:text-white px-3 py-2.5 rounded-lg">
-                <Settings />
-              </button>
+
+              <div className="relative inline-block text-left">
+                <div>
+                  <button
+                    aria-expanded={isMenuOpen}
+                    aria-haspopup="true"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    id="menu-button"
+                    type="button"
+                    onClick={toggleMenu}
+                    ref={menuButtonRef}
+                  >
+                    Username
+                  </button>
+                </div>
+                <div
+                  aria-labelledby="menu-button"
+                  aria-orientation="vertical"
+                  className={`${
+                    isMenuOpen ? "" : "hidden"
+                  } absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                  role="menu"
+                  tabIndex="-1"
+                  ref={menuRef}
+                >
+                  <div className="py-1" role="none">
+                    <a
+                      className="text-gray-700 block px-4 py-2 text-sm"
+                      href="#"
+                      id="menu-item-0"
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Account settings
+                    </a>
+                    <a
+                      className="text-gray-700 block px-4 py-2 text-sm"
+                      href="#"
+                      id="menu-item-1"
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Support
+                    </a>
+                    <a
+                      className="text-gray-700 block px-4 py-2 text-sm"
+                      href="#"
+                      id="menu-item-2"
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      License
+                    </a>
+                    <form action="#" method="POST" role="none">
+                      <Link
+                        to="/"
+                        className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
+                        id="menu-item-3"
+                        role="menuitem"
+                        tabIndex="-1"
+                        type="submit"
+                      >
+                        Sign out
+                      </Link>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </nav>
         {/* ---------------- SIDEBAR ---------------- */}
         <aside
-        aria-label="Sidenav"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
-      
-      >
+          aria-label="Sidenav"
+          className={`fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+        >
           <div className="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
             <form action="#" className="md:hidden mb-2" method="GET">
               <label className="sr-only" htmlFor="sidebar-search">
@@ -162,9 +254,9 @@ const HomePage = () => {
 
             <ul className="space-y-2">
               <li>
-                <a
+                <Link
+                  to="/adminpanel"
                   className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  href="#"
                 >
                   <svg
                     aria-hidden="true"
@@ -177,12 +269,12 @@ const HomePage = () => {
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                   </svg>
                   <span className="ml-3">Overview</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
+                  to="/adminpanel/customers"
                   className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  href="#"
                 >
                   <svg
                     aria-hidden="true"
@@ -194,26 +286,8 @@ const HomePage = () => {
                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                   </svg>
-                  <span className="ml-3">Overview</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  href="#"
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-                  </svg>
-                  <span className="ml-3">Overview</span>
-                </a>
+                  <span className="ml-3">Customers</span>
+                </Link>
               </li>
             </ul>
 
@@ -260,31 +334,12 @@ const HomePage = () => {
           </div>
         </aside>
         {/* ---------------- DASHBOARD ---------------- */}
-        <main className="p-4 md:ml-64 h-auto pt-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64" />
-          </div>
-          <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4" />
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-          </div>
-          <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4" />
-          <div className="grid grid-cols-2 gap-4">
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-            <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72" />
-          </div>
+        <main className="md:ml-64 h-auto pt-20 bg-gray-300 dark:bg-gray-900">
+          <Outlet />
         </main>
       </div>
     </>
   );
 };
 
-export default HomePage;
+export default AdminBody;
